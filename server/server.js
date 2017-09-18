@@ -16,7 +16,9 @@ var Todo = mongoose.model("Todo", {
 });
 
 var newTodo = new Todo({
-  text: "Cook dinner"
+  text: "Go to office",
+  completed:false,
+  completedAt:123
 });
 
 newTodo.save().then(
