@@ -5,21 +5,22 @@ mongoose.connect("mongodb://localhost:27017/ToDoApp");
 
 var Todo = mongoose.model("Todo", {
   text: {
-    type: String
+    type: String,
+    required: true,
+    minLength: 1,
+    trim: true
   },
   completed: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   completedAt: {
-    type: Number
+    type: Number,
+    default: null
   }
 });
 
-var newTodo = new Todo({
-  text: 256489,
-  completed: '',
-  completedAt: 123
-});
+var newTodo = new Todo();
 
 newTodo.save().then(
   doc => {
@@ -29,6 +30,3 @@ newTodo.save().then(
     console.log("Not able to save todo", e);
   }
 );
-
-// The properties as typesafe. When invalid type is passed, eg, completed which expect bool and when passed a string,
-// it checked as if the input is null or empty and set to bool accordingly.
