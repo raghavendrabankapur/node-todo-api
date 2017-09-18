@@ -16,9 +16,9 @@ var Todo = mongoose.model("Todo", {
 });
 
 var newTodo = new Todo({
-  text: "Go to office",
-  completed:false,
-  completedAt:123
+  text: 256489,
+  completed: '',
+  completedAt: 123
 });
 
 newTodo.save().then(
@@ -26,6 +26,9 @@ newTodo.save().then(
     console.log("Saved todo", doc);
   },
   e => {
-    console.log("Not able to save todo");
+    console.log("Not able to save todo", e);
   }
 );
+
+// The properties as typesafe. When invalid type is passed, eg, completed which expect bool and when passed a string,
+// it checked as if the input is null or empty and set to bool accordingly.
