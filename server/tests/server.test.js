@@ -103,18 +103,6 @@ describe("POST /todos", () => {
   });
 });
 
-describe("GET /todos", () => {
-  it("shoult get all todos", done => {
-    request(app)
-      .get("/todos")
-      .expect(200)
-      .expect(res => {
-        expect(res.body.todos.length).toBe(2);
-      })
-      .end(done);
-  });
-});
-
 describe("GET /todos/{text/id}/:key", () => {
   it("shoulg get single todo", done => {
     request(app)
@@ -149,6 +137,16 @@ describe("GET /todos/{text/id}/:key", () => {
           })
           .end(done);
       });
+  });
+
+  it("shoult get all todos", done => {
+    request(app)
+      .get("/todos")
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todos.length).toBe(2);
+      })
+      .end(done);
   });
 });
 
