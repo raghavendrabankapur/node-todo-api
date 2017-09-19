@@ -12,8 +12,8 @@ app.use(bodyParser.json());
 app.post("/todos", (req, res) => {
   var todo = new Todo({
     text: req.body.text,
-    completed:req.body.completed,
-    completedAt:req.body.completedAt
+    completed: req.body.completed,
+    completedAt: req.body.completedAt
   });
 
   todo.save().then(
@@ -32,7 +32,22 @@ app.get("/todos", (req, res) => {
       res.send({ todos });
     },
     e => {
-        res.status(400).send(e);
+      res.status(400).send(e);
+    }
+  );
+});
+
+app.get("/todos/text/:key", (req, res) => {
+  Todo.find({ text: req.params.key }).then(
+    todo => {
+      if (todo.length === 0) {
+        res.status(404).send(`Could not find the todo ${req.params.key}`);
+      } else {
+        res.send(todo);
+      }
+    },
+    e => {
+      res.status(400).send(e);
     }
   );
 });
