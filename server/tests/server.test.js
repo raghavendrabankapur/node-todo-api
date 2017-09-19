@@ -114,3 +114,79 @@ describe("GET /todos", () => {
       .end(done);
   });
 });
+
+describe("GET /todos/text/:key", () => {
+  it("shoulg get single todo", done => {
+    request(app)
+      .get("/todos/text/First test todo")
+      .expect(200)
+      .expect(res => {
+        expect(res.body.text).toBe("First test todo");
+      })
+      .end(done);
+  });
+});
+
+describe("GET /todos/id/:key", () => {
+  it("shoulg get single todo by id", done => {
+    var text = "Test todo text";
+    var id = "";
+
+    var agent = request(app);
+
+    agent
+      .post("/todos")
+      .send({ text })
+      .expect(200)
+      .expect(res => {
+        id = res.body._id;
+      })
+      .end(() => {
+        agent
+          .get(`/todos/id/${id}`)
+          .send()
+          .expect(200)
+          .expect(res => {
+            expect(res.body.text).toBe(text);
+          })
+          .end(done);
+      });
+  });
+});
+
+describe('DELETE /todos/{text/id}/:key',()=>{
+  it("shoulg delete single todo", done => {
+    request(app)
+      .delete("/todos/text/First test todo")
+      .expect(200)
+      .expect(res => {
+        expect(res.body.text).toBe("First test todo");
+      })
+      .end(done);
+  });
+
+  it('should delete single todo with id',done=>{
+    var text = "Test todo text";
+    var id = "";
+
+    var agent = request(app);
+
+    agent
+      .post("/todos")
+      .send({ text })
+      .expect(200)
+      .expect(res => {
+        id = res.body._id;
+      })
+      .end(() => {
+        agent
+          .delete(`/todos/id/${id}`)
+          .send()
+          .expect(200)
+          .expect(res => {
+            expect(res.body.text).toBe(text);
+          })
+          .end(done);
+      });
+  })
+})

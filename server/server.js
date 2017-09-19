@@ -38,10 +38,59 @@ app.get("/todos", (req, res) => {
 });
 
 app.get("/todos/text/:key", (req, res) => {
-  Todo.find({ text: req.params.key }).then(
+  Todo.findOne({ text: req.params.key }).then(
     todo => {
-      if (todo.length === 0) {
+      if (todo === null) {
         res.status(404).send(`Could not find the todo ${req.params.key}`);
+      } else {
+        res.send(todo);
+      }
+    },
+    e => {
+      res.status(400).send(e);
+    }
+  );
+});
+
+app.get("/todos/id/:key", (req, res) => {
+  Todo.findById(req.params.key).then(
+    todo => {
+      if (todo === null) {
+        res.status(404).send(`Could not find the todo ${req.params.key}`);
+      } else {
+        res.send(todo);
+      }
+    },
+    e => {
+      res.status(400).send(e);
+    }
+  );
+});
+
+app.delete("/todos/text/:key", (req, res) => {
+  Todo.findOneAndRemove({ text: req.params.key }, { passRawResult: true }).then(
+    todo => {
+      if (todo === null) {
+        return res
+          .status(404)
+          .send(`Could not find the todo ${req.params.key}`);
+      } else {
+        res.send(todo);
+      }
+    },
+    e => {
+      res.status(400).send(e);
+    }
+  );
+});
+
+app.delete("/todos/id/:key", (req, res) => {
+  Todo.findByIdAndRemove(req.params.key, { passRawResult: true }).then(
+    todo => {
+      if (todo === null) {
+        return res
+          .status(404)
+          .send(`Could not find the todo ${req.params.key}`);
       } else {
         res.send(todo);
       }
