@@ -69,7 +69,7 @@ app.get("/todos/id/:id", (req, res) => {
       }
     );
   } else {
-    res.status(404);
+    res.status(404).send();
   }
 });
 
@@ -111,7 +111,7 @@ app.delete("/todos/id/:id", (req, res) => {
       }
     );
   } else {
-    res.status(404);
+    res.status(404).send();
   }
 });
 
