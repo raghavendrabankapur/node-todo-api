@@ -40,7 +40,7 @@ app.get("/todos", (req, res) => {
 app.get("/todos/text/:key", (req, res) => {
   Todo.findOne({ text: req.params.key }).then(
     todo => {
-      if (todo === null) {
+      if (!todo) {
         res.status(404).send(`Could not find the todo ${req.params.key}`);
       } else {
         res.send(todo);
@@ -55,7 +55,7 @@ app.get("/todos/text/:key", (req, res) => {
 app.get("/todos/id/:key", (req, res) => {
   Todo.findById(req.params.key).then(
     todo => {
-      if (todo === null) {
+      if (!todo) {
         res.status(404).send(`Could not find the todo ${req.params.key}`);
       } else {
         res.send(todo);
@@ -70,7 +70,7 @@ app.get("/todos/id/:key", (req, res) => {
 app.delete("/todos/text/:key", (req, res) => {
   Todo.findOneAndRemove({ text: req.params.key }, { passRawResult: true }).then(
     todo => {
-      if (todo === null) {
+      if (!todo) {
         return res
           .status(404)
           .send(`Could not find the todo ${req.params.key}`);
@@ -87,7 +87,7 @@ app.delete("/todos/text/:key", (req, res) => {
 app.delete("/todos/id/:key", (req, res) => {
   Todo.findByIdAndRemove(req.params.key, { passRawResult: true }).then(
     todo => {
-      if (todo === null) {
+      if (!todo) {
         return res
           .status(404)
           .send(`Could not find the todo ${req.params.key}`);
