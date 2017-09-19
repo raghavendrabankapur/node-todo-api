@@ -1,5 +1,6 @@
 var express = require("express");
 var bodyParser = require("body-parser");
+var { ObjectID } = require("mongodb");
 
 var { mongoose } = require("./db/mongoose");
 var { Todo } = require("./models/todo");
@@ -53,22 +54,30 @@ app.get("/todos/text/:textValue", (req, res) => {
 });
 
 app.get("/todos/id/:id", (req, res) => {
-  Todo.findById(req.params.id).then(
-    todo => {
-      if (!todo) {
-        res.status(404).send(`Could not find the todo ${req.params.key}`);
-      } else {
-        res.send(todo);
+  var id = req.params.id;
+  if (ObjectID.isValid(id)) {
+    Todo.findById(req.params.id).then(
+      todo => {
+        if (!todo) {
+          res.status(404).send(`Could not find the todo ${req.params.key}`);
+        } else {
+          res.send(todo);
+        }
+      },
+      e => {
+        res.status(400).send(e);
       }
-    },
-    e => {
-      res.status(400).send(e);
-    }
-  );
+    );
+  } else {
+    res.status(400);
+  }
 });
 
 app.delete("/todos/text/:textValue", (req, res) => {
-  Todo.findOneAndRemove({ text: req.params.textValue }, { passRawResult: true }).then(
+  Todo.findOneAndRemove(
+    { text: req.params.textValue },
+    { passRawResult: true }
+  ).then(
     todo => {
       if (!todo) {
         return res
@@ -85,20 +94,25 @@ app.delete("/todos/text/:textValue", (req, res) => {
 });
 
 app.delete("/todos/id/:id", (req, res) => {
-  Todo.findByIdAndRemove(req.params.id, { passRawResult: true }).then(
-    todo => {
-      if (!todo) {
-        return res
-          .status(404)
-          .send(`Could not find the todo ${req.params.key}`);
-      } else {
-        res.send(todo);
+  var id = req.params.id;
+  if (ObjectID.isValid(id)) {
+    Todo.findByIdAndRemove(req.params.id, { passRawResult: true }).then(
+      todo => {
+        if (!todo) {
+          return res
+            .status(404)
+            .send(`Could not find the todo ${req.params.key}`);
+        } else {
+          res.send(todo);
+        }
+      },
+      e => {
+        res.status(400).send(e);
       }
-    },
-    e => {
-      res.status(400).send(e);
-    }
-  );
+    );
+  } else {
+    res.status(400);
+  }
 });
 
 app.listen(3000, () => {
