@@ -115,7 +115,7 @@ describe("GET /todos", () => {
   });
 });
 
-describe("GET /todos/text/:key", () => {
+describe("GET /todos/{text/id}/:key", () => {
   it("shoulg get single todo", done => {
     request(app)
       .get("/todos/text/First test todo")
@@ -125,9 +125,7 @@ describe("GET /todos/text/:key", () => {
       })
       .end(done);
   });
-});
 
-describe("GET /todos/id/:key", () => {
   it("shoulg get single todo by id", done => {
     var text = "Test todo text";
     var id = "";
