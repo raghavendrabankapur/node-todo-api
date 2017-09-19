@@ -37,8 +37,8 @@ app.get("/todos", (req, res) => {
   );
 });
 
-app.get("/todos/text/:key", (req, res) => {
-  Todo.findOne({ text: req.params.key }).then(
+app.get("/todos/text/:textValue", (req, res) => {
+  Todo.findOne({ text: req.params.textValue }).then(
     todo => {
       if (!todo) {
         res.status(404).send(`Could not find the todo ${req.params.key}`);
@@ -52,8 +52,8 @@ app.get("/todos/text/:key", (req, res) => {
   );
 });
 
-app.get("/todos/id/:key", (req, res) => {
-  Todo.findById(req.params.key).then(
+app.get("/todos/id/:id", (req, res) => {
+  Todo.findById(req.params.id).then(
     todo => {
       if (!todo) {
         res.status(404).send(`Could not find the todo ${req.params.key}`);
@@ -67,8 +67,8 @@ app.get("/todos/id/:key", (req, res) => {
   );
 });
 
-app.delete("/todos/text/:key", (req, res) => {
-  Todo.findOneAndRemove({ text: req.params.key }, { passRawResult: true }).then(
+app.delete("/todos/text/:textValue", (req, res) => {
+  Todo.findOneAndRemove({ text: req.params.textValue }, { passRawResult: true }).then(
     todo => {
       if (!todo) {
         return res
@@ -84,8 +84,8 @@ app.delete("/todos/text/:key", (req, res) => {
   );
 });
 
-app.delete("/todos/id/:key", (req, res) => {
-  Todo.findByIdAndRemove(req.params.key, { passRawResult: true }).then(
+app.delete("/todos/id/:id", (req, res) => {
+  Todo.findByIdAndRemove(req.params.id, { passRawResult: true }).then(
     todo => {
       if (!todo) {
         return res
