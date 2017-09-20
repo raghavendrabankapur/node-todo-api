@@ -61,7 +61,7 @@ app.get("/todos/id/:id", (req, res) => {
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }
-  Todo.findById(req.params.id)
+  Todo.findById(id)
     .then(
       todo => {
         if (!todo) {
@@ -104,7 +104,7 @@ app.delete("/todos/id/:id", (req, res) => {
   if (!ObjectID.isValid(id)) {
    return res.status(404).send();
   }
-  Todo.findByIdAndRemove(req.params.id, { passRawResult: true }).then(
+  Todo.findByIdAndRemove(id, { passRawResult: true }).then(
     todo => {
       if (!todo) {
         return res
