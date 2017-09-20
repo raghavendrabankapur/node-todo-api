@@ -1,17 +1,19 @@
 const request = require("supertest");
 const expect = require("expect");
-const {ObjectID} = require('mongoose');
+const { ObjectID } = require("mongodb");
 const { app } = require("../server");
 const { Todo } = require("../models/todo");
 
 const todos = [
   {
-    _id:new ObjectID(),
+    _id: new ObjectID(),
     text: "First test todo"
   },
   {
-    _id:new ObjectID(),
-    text: "Second test todo"
+    _id: new ObjectID(),
+    text: "Second test todo",
+    completed: true,
+    completedAt: 333
   }
 ];
 
@@ -151,22 +153,22 @@ describe("GET /todos/{text/id}/:key", () => {
       .end(done);
   });
 
-  it('should return 404 when invalid id',(done)=>{
+  it("should return 404 when invalid id", done => {
     request(app)
-    .get("/todos/id/123")
-    .expect(404)
-    .end(done);
-  })
+      .get("/todos/id/123")
+      .expect(404)
+      .end(done);
+  });
 
-  it('should return 404 when invalid text',(done)=>{
+  it("should return 404 when invalid text", done => {
     request(app)
-    .get("/todos/text/123")
-    .expect(404)
-    .end(done);
-  })
+      .get("/todos/text/123")
+      .expect(404)
+      .end(done);
+  });
 });
 
-describe('DELETE /todos/{text/id}/:key',()=>{
+describe("DELETE /todos/{text/id}/:key", () => {
   it("shoulg delete single todo", done => {
     request(app)
       .delete("/todos/text/First test todo")
@@ -177,7 +179,7 @@ describe('DELETE /todos/{text/id}/:key',()=>{
       .end(done);
   });
 
-  it('should delete single todo with id',done=>{
+  it("should delete single todo with id", done => {
     var text = "Test todo text";
     var id = "";
 
@@ -200,11 +202,39 @@ describe('DELETE /todos/{text/id}/:key',()=>{
           })
           .end(done);
       });
-  })
-})
+  });
+});
 
-describe('PATCH /todos/{text/id}/:key',()=>{
-  it('should update the text value',(done)=>{
+describe("PATCH /todos/{text/id}/:key", () => {
+  it("should update the todo", done => {
+    var id = todos[0]._id;
+    request(app)
+      .patch(`/todos/id/${id}`)
+      .send({
+        text: "Updated first one",
+        completed: true
+      })
+      .expect(200)
+      .expect(res => {
+        expect(res.body.text).toBe("Updated first one");
+        expect(res.body.completed).toBe(true);
+      })
+      .end(done);
+  });
 
-  })
-})
+  it("should clear completedAt when todo is not completed",(done)=>{
+    var id = todos[1]._id;
+    request(app)
+      .patch(`/todos/id/${id}`)
+      .send({
+        text: "Updated second one",
+        completed:false
+      })
+      .expect(200)
+      .expect(res => {
+        expect(res.body.text).toBe("Updated second one");
+        expect(res.body.completed).toBe(false);
+      })
+      .end(done);
+  });
+});
