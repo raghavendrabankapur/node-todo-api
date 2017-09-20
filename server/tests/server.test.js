@@ -1,14 +1,16 @@
 const request = require("supertest");
 const expect = require("expect");
-
+const {ObjectID} = require('mongoose');
 const { app } = require("../server");
 const { Todo } = require("../models/todo");
 
 const todos = [
   {
+    _id:new ObjectID(),
     text: "First test todo"
   },
   {
+    _id:new ObjectID(),
     text: "Second test todo"
   }
 ];
@@ -198,5 +200,11 @@ describe('DELETE /todos/{text/id}/:key',()=>{
           })
           .end(done);
       });
+  })
+})
+
+describe('PATCH /todos/{text/id}/:key',()=>{
+  it('should update the text value',(done)=>{
+
   })
 })
