@@ -7,6 +7,7 @@ var { Todo } = require("./models/todo");
 var { User } = require("./models/user");
 
 var app = express();
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -39,24 +40,8 @@ app.get("/todos", (req, res) => {
 });
 
 app.get("/todos/text/:textValue", (req, res) => {
-  Todo.findOne({ text: req.params.textValue }).then(
-    todo => {
-      if (!todo) {
-        res.status(404).send(`Could not find the todo ${req.params.key}`);
-      } else {
-        res.send(todo);
-      }
-    },
-    e => {
-      res.status(400).send(e);
-    }
-  );
-});
-
-app.get("/todos/id/:id", (req, res) => {
-  var id = req.params.id;
-  if (ObjectID.isValid(id)) {
-    Todo.findById(req.params.id).then(
+  Todo.findOne({ text: req.params.textValue })
+    .then(
       todo => {
         if (!todo) {
           res.status(404).send(`Could not find the todo ${req.params.key}`);
@@ -67,10 +52,31 @@ app.get("/todos/id/:id", (req, res) => {
       e => {
         res.status(400).send(e);
       }
-    );
-  } else {
-    res.status(404).send();
+    )
+    .catch(e => {});
+});
+
+app.get("/todos/id/:id", (req, res) => {
+  var id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
   }
+  Todo.findById(req.params.id)
+    .then(
+      todo => {
+        if (!todo) {
+          res.status(404).send(`Could not find the todo ${req.params.key}`);
+        } else {
+          res.send(todo);
+        }
+      },
+      e => {
+        res.status(400).send(e);
+      }
+    )
+    .catch(e => {
+      res.status(400).send();
+    });
 });
 
 app.delete("/todos/text/:textValue", (req, res) => {
@@ -95,28 +101,27 @@ app.delete("/todos/text/:textValue", (req, res) => {
 
 app.delete("/todos/id/:id", (req, res) => {
   var id = req.params.id;
-  if (ObjectID.isValid(id)) {
-    Todo.findByIdAndRemove(req.params.id, { passRawResult: true }).then(
-      todo => {
-        if (!todo) {
-          return res
-            .status(404)
-            .send(`Could not find the todo ${req.params.key}`);
-        } else {
-          res.send(todo);
-        }
-      },
-      e => {
-        res.status(400).send(e);
-      }
-    );
-  } else {
-    res.status(404).send();
+  if (!ObjectID.isValid(id)) {
+   return res.status(404).send();
   }
+  Todo.findByIdAndRemove(req.params.id, { passRawResult: true }).then(
+    todo => {
+      if (!todo) {
+        return res
+          .status(404)
+          .send(`Could not find the todo ${req.params.key}`);
+      } else {
+        res.send(todo);
+      }
+    },
+    e => {
+      res.status(400).send(e);
+    }
+  );
 });
 
-app.listen(3000, () => {
-  console.log("Connected to app server at port 3000");
+app.listen(port, () => {
+  console.log(`started up at port ${port}`);
 });
 
 module.exports = { app };

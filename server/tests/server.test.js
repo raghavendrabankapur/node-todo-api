@@ -148,6 +148,20 @@ describe("GET /todos/{text/id}/:key", () => {
       })
       .end(done);
   });
+
+  it('should return 404 when invalid id',(done)=>{
+    request(app)
+    .get("/todos/id/123")
+    .expect(404)
+    .end(done);
+  })
+
+  it('should return 404 when invalid text',(done)=>{
+    request(app)
+    .get("/todos/text/123")
+    .expect(404)
+    .end(done);
+  })
 });
 
 describe('DELETE /todos/{text/id}/:key',()=>{
