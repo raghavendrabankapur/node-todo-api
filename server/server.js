@@ -44,10 +44,11 @@ app.get("/todos/text/:textValue", (req, res) => {
     .then(
       todo => {
         if (!todo) {
-          res.status(404).send(`Could not find the todo ${req.params.key}`);
-        } else {
-          res.send(todo);
+          return res
+            .status(404)
+            .send(`Could not find the todo ${req.params.key}`);
         }
+        res.send(todo);
       },
       e => {
         res.status(400).send(e);
@@ -65,10 +66,11 @@ app.get("/todos/id/:id", (req, res) => {
     .then(
       todo => {
         if (!todo) {
-          res.status(404).send(`Could not find the todo ${req.params.key}`);
-        } else {
-          res.send(todo);
+          return res
+            .status(404)
+            .send(`Could not find the todo ${req.params.key}`);
         }
+        res.send(todo);
       },
       e => {
         res.status(400).send(e);
@@ -89,9 +91,8 @@ app.delete("/todos/text/:textValue", (req, res) => {
         return res
           .status(404)
           .send(`Could not find the todo ${req.params.key}`);
-      } else {
-        res.send(todo);
       }
+      res.send(todo);
     },
     e => {
       res.status(400).send(e);
@@ -102,7 +103,7 @@ app.delete("/todos/text/:textValue", (req, res) => {
 app.delete("/todos/id/:id", (req, res) => {
   var id = req.params.id;
   if (!ObjectID.isValid(id)) {
-   return res.status(404).send();
+    return res.status(404).send();
   }
   Todo.findByIdAndRemove(id, { passRawResult: true }).then(
     todo => {
@@ -110,9 +111,8 @@ app.delete("/todos/id/:id", (req, res) => {
         return res
           .status(404)
           .send(`Could not find the todo ${req.params.key}`);
-      } else {
-        res.send(todo);
       }
+      res.send(todo);
     },
     e => {
       res.status(400).send(e);
